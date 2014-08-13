@@ -11,6 +11,7 @@ class MoodleQuery
     // override mysqli for PDO
     $this->config->dbtype = ($this->config->dbtype == 'mysqli') ? 'mysql' : $this->config->dbtype;
     $db = new PDO($this->config->dbtype.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, "moodle_26", "m768zVWyH3c5Hyez");
+
     if (is_object($db)) {
       $this->mdb = $db;
       return true;
@@ -46,11 +47,9 @@ class MoodleQuery
       }
     } else {
       try {
-        $query = "SELECT * 
-                  FROM mdl_sessions as ms
-                  RIGHT JOIN mdl_user as mu 
-                  ON ms.userid = mu.id
-                  WHERE ms.userid = :uid";
+        $query = "SELECT * FROM
+                  mdl_user as mu
+                  WHERE mu.id = :uid";
         $stmt = $this->mdb->prepare($query);
         $stmt->execute(array('uid' => $studentid));
         $result = $stmt->fetchObject();
@@ -71,10 +70,9 @@ class MoodleQuery
    *
    */
   public function getenrolments(&$user = NULL) {
-    krumo($user->id);
     if (is_object($user)) {
       try {
-        $query = 'SELECT e.courseid, c.idnumber ,c.fullname, c.shortname, c.summary
+        $query = 'SELECT c.*
         FROM mdl_user as u
         RIGHT JOIN mdl_user_enrolments as ue 
         ON u.id = ue.userid 
@@ -92,7 +90,8 @@ class MoodleQuery
         // todo - fetchall then call constructor for course object (eg add path etc)
         $courses = array();
         while (is_object($course = $stmt->fetchObject())) {
-          $courses[] = $course;
+          $courses[] = $this->getcourse($course);
+          // $courses[] = $course;
         }
         return $courses;
 
@@ -107,12 +106,13 @@ class MoodleQuery
     if (is_object($course)) {
       // todo - given course details, call constructor for course object
       // (in meantime just add details like path to course object)
-      $course->url = $this->config->wwwroot.'/course/view.php?id='.$course->courseid;
+      $course->url = $this->config->wwwroot.'/course/view.php?id='.$course->id;
 
     } 
     else if (is_numeric($course)) {
       // todo - query to get course info from course id
-      return $course;
+      
     }
+    return $course;
   }
 }
