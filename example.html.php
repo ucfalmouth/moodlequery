@@ -1,34 +1,50 @@
 <?php
-
 ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(-1);
 
 require_once('includes/krumo/class.krumo.php');
 require_once('includes/class.moodlequery.php');
-require_once('config.php');
+require_once('config.php'); // edited config file from moodle install
+?>
 
+<h1>Example</h1>
+<p>First we get the moodle session id from browser cookie and look up the student</p>
 
-echo "<h1>API call to get moodle data</h1>";
-
-// $student = get_mdl_user();
-// krumo($student);
-
+<?php
 $moodle = new MoodleQuery($CFG);
-// $student = $moodle->getuser($_COOKIE['MoodleSession']);
-$student = $moodle->getuser(3);
 
-$courses = $moodle->getenrolments($student);
-echo 'list courses';
-echo '<dl>';
-foreach ($courses as $course) {
-  echo '<dt><a href="'.$CFG->wwwroot.'/course/view.php?id='.$course->courseid.'">'. $course->fullname.' ('.$course->idnumber.')</a></dt>';
-  echo ($course->summary) ? '<dd>'. strip_tags($course->summary) .'</dd>' : '';
+if (isset($_COOKIE['MoodleSession'])) {
+  echo '<p><em>Moodle session id found</em></p>';
+  // $student = $moodle->getuser(3); // get a different user based on their moodle user id
+  if ($student = $moodle->getuser($_COOKIE['MoodleSession'])) { 
+    $fullname = '<strong>'. $student->firstname .' '. $student->lastname .'</strong>';
+    $courses = $moodle->getenrolments($student);
+    echo "<p>You are logged in as student $fullname:</p>";
+    krumo($student);
+    echo "<p>$fullname is enrolled on the following courses:</p>";
+    echo '<dl>';
+    foreach ($courses as $course) {
+      echo '<dt><a href="'.$course->url.'">'. $course->fullname.' ('.$course->idnumber.')</a></dt>';
+      echo ($course->summary) ? '<dd>'. strip_tags($course->summary) .'</dd>' : '';
+    }
+    echo '</dl>';
+    krumo($courses);
+  } else {
+    echo '<p>No moodle user/session was found.</p>';
+    echo '<p>Are you logged into moodle?</p>';
+  }
 }
-echo '</dl>';
+else {
+ echo '<p><em>Moodle session id <strong>not found</strong></em</p>';
+}
 
-echo 'objects';
-krumo($student); 
-krumo($courses); 
+
+
+
+
+
+
+
 
 //krumo(student_get_course($student['id']));
