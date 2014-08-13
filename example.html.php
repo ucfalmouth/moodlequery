@@ -22,7 +22,7 @@ $student = $moodle->getuser(3);
 $courses = $moodle->getenrolments($student);
 echo '<ul>';
 foreach ($courses as $course) {
-  echo '<li>'.$course['fullname'].'</li>';
+  echo '<li>'.$course->fullname.'</li>';
 }
 echo '</ul>';
 
