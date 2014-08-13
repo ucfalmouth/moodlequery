@@ -73,7 +73,7 @@ class MoodleQuery
   public function getenrolments(&$user = NULL) {
     if ($user)  {
       try {
-        $query = 'SELECT e.courseid, c.fullname, c.shortname 
+        $query = 'SELECT e.courseid, c.idnumber ,c.fullname, c.shortname, c.summary
         FROM mdl_user as u
         RIGHT JOIN mdl_user_enrolments as ue 
         ON u.id = ue.userid 
@@ -81,7 +81,8 @@ class MoodleQuery
         ON ue.enrolid = e.id 
         JOIN mdl_course as c 
         ON e.courseid = c.id
-        WHERE u.id = :sid';
+        WHERE u.id = :sid
+        AND c.visible = 1';
         $stmt = $this->mdb->prepare($query);
         $stmt->execute(array('sid' => $user->id));
        
