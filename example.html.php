@@ -18,14 +18,16 @@ $moodle = new MoodleQuery($CFG);
 // $student = $moodle->getuser($_COOKIE['MoodleSession']);
 $student = $moodle->getuser(3);
 
-
 $courses = $moodle->getenrolments($student);
-echo '<ul>';
+echo 'list courses';
+echo '<dl>';
 foreach ($courses as $course) {
-  echo '<li>'.$course->fullname.'</li>';
+  echo '<dt><a href="'.$CFG->wwwroot.'/course/view.php?id='.$course->courseid.'">'. $course->fullname.' ('.$course->idnumber.')</a></dt>';
+  echo ($course->summary) ? '<dd>'. strip_tags($course->summary) .'</dd>' : '';
 }
-echo '</ul>';
+echo '</dl>';
 
+echo 'objects';
 krumo($student); 
 krumo($courses); 
 

@@ -71,7 +71,8 @@ class MoodleQuery
    *
    */
   public function getenrolments(&$user = NULL) {
-    if ($user)  {
+    krumo($user->id);
+    if (is_object($user)) {
       try {
         $query = 'SELECT e.courseid, c.idnumber ,c.fullname, c.shortname, c.summary
         FROM mdl_user as u
@@ -81,13 +82,14 @@ class MoodleQuery
         ON ue.enrolid = e.id 
         JOIN mdl_course as c 
         ON e.courseid = c.id
-        WHERE u.id = :sid
+        WHERE u.id = :uid
         AND c.visible = 1';
         $stmt = $this->mdb->prepare($query);
-        $stmt->execute(array('sid' => $user->id));
-       
+        $stmt->execute(array('uid' => $user->id));
         // $result = $stmt->fetchAll();
         // return $result;
+   
+        // todo - fetchall then call constructor for course object (eg add path etc)
         $courses = array();
         while (is_object($course = $stmt->fetchObject())) {
           $courses[] = $course;
@@ -99,5 +101,18 @@ class MoodleQuery
       }
     }
     return false;
+  }
+
+  private function getcourse($course) {
+    if (is_object($course)) {
+      // todo - given course details, call constructor for course object
+      // (in meantime just add details like path to course object)
+      $course->url = $this->config->wwwroot.'/course/view.php?id='.$course->courseid;
+
+    } 
+    else if (is_numeric($course)) {
+      // todo - query to get course info from course id
+      return $course;
+    }
   }
 }
