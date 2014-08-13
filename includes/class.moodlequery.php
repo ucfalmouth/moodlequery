@@ -67,7 +67,7 @@ class MoodleQuery
    * gets enrolments for moodle user (eg student) from the moodle database
    *
    * accepts user object as parameter
-   * returns a user object, or false if not found
+   * returns an array of course objects, or false if not found
    *
    */
   public function getenrolments(&$user = NULL) {
@@ -85,13 +85,14 @@ class MoodleQuery
         $stmt = $this->mdb->prepare($query);
         $stmt->execute(array('sid' => $user->id));
        
-        $result = $stmt->fetchAll();
-        return $result;
-        if ( count($result) ) { 
-          foreach($result as $row) {
-           return $row;
-          }   
+        // $result = $stmt->fetchAll();
+        // return $result;
+        $courses = array();
+        while (is_object($course = $stmt->fetchObject())) {
+          $courses[] = $course;
         }
+        return $courses;
+
       } catch(PDOException $e) {
           echo 'ERROR: ' . $e->getMessage();
       }
