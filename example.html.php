@@ -4,7 +4,7 @@ ini_set('display_startup_errors',1);
 error_reporting(-1);
 
 require_once('includes/krumo/class.krumo.php');
-require_once('includes/class.moodlequery.php');
+require_once('class.moodlequery.php');
 require_once('config.php'); // edited config file from moodle install
 ?>
 
