@@ -6,18 +6,10 @@ At present this package must be contained within the moodle directory structure 
 
 ##Usage
 
-Add config.php file to root directory to use, just copy the moodle config.php and delete everything except the following excerpt:
-
-from
-
-    $CFG = new stdClass();
-
-to 
-
-    $CFG->admin     = 'admin';
-
-(make sure to leave <?php at the top)
+Copy the moodle config.php file into the moodlequery directory.
 
 The example php file (example.html.php) collects your user data and enrolled courses from moodle as a demonstration.
+
+Do what you will with your newfound power to list courses and students.
 
 
