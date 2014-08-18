@@ -102,20 +102,46 @@ class MoodleQuery
     return false;
   }
 
-  public function getaspire(&$user = NULL) {
-    try {
-        $query = "SELECT * FROM mdl_config_plugins
-        WHERE plugin = 'mod_aspirelists'
-        OR plugin = 'aspirelists'";
+  public function getaspireconfig(&$user = NULL) {
+    return $this->getconfig(array('mod_aspirelists', 'aspirelists'));
+  }
+
+  /*
+   * gets config for moodle plugin(s) from the moodle database
+   *
+   * accepts string/array of plugin names
+   * returns an array of pugin config arrays, name=>value
+   *
+   */
+  private function getconfig($plugin = NULL) {
+    
+    if (is_array($plugin)){ // multiple plugins?
+      $query = "SELECT name, value, plugin FROM mdl_config_plugins
+      WHERE plugin = '". $plugin[0] ."' ";
+      foreach ($plugin as $i => $p) {
+         $query .= ($i) ? "OR plugin = '". $p ."' " : '';
+      }
+    }
+    elseif(is_string($plugin)) {
+      $query = "SELECT name, value, plugin FROM mdl_config_plugins
+      WHERE plugin = '". $plugin ."' ";
+    }
+    if ($query) {
+      try {
         $stmt = $this->mdb->prepare($query);
         $stmt->execute();
+        $config = array();
         $result = $stmt->fetchAll();
-        return $result;
-        
+        foreach($result as $c) {
+          $config[$c['plugin']][$c['name']] = $c['value'];
+        }
+        return $config; 
       } catch(PDOException $e) {
           echo 'ERROR: ' . $e->getMessage();
       }
-  }
+    }
+    return false;
+}
 
   private function getcourse($course) {
     if (is_object($course)) {
