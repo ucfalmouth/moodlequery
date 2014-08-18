@@ -1,6 +1,6 @@
-#Simple Moodle API
+#Simple Moodle/Aspire API
 
-Library of simple objects/functions to allow easier access to moodle course/user information from simple, standalone, php rendered pages.
+Library of simple objects/functions to allow easier access to moodle course/user information, and associated 'Talis Aspire' reading lists from simple, standalone, php rendered pages.
 
 At present this package must be contained within the moodle directory structure so that it can grab the session cookie to check you are logged in etc.
 
