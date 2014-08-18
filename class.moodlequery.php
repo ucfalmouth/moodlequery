@@ -102,6 +102,21 @@ class MoodleQuery
     return false;
   }
 
+  public function getaspire(&$user = NULL) {
+    try {
+        $query = "SELECT * FROM mdl_config_plugins
+        WHERE plugin = 'mod_aspirelists'
+        OR plugin = 'aspirelists'";
+        $stmt = $this->mdb->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $result;
+        
+      } catch(PDOException $e) {
+          echo 'ERROR: ' . $e->getMessage();
+      }
+  }
+
   private function getcourse($course) {
     if (is_object($course)) {
       // todo - given course details, call constructor for course object
@@ -115,4 +130,5 @@ class MoodleQuery
     }
     return $course;
   }
+
 }
