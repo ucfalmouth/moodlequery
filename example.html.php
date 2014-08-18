@@ -4,25 +4,30 @@ ini_set('display_startup_errors',1);
 error_reporting(-1);
 
 require_once('includes/krumo/class.krumo.php');
-require_once('class.moodle.query.php');
-// require_once('class.aspire.api.php');
+require_once('class.moodlequery.php');
+require_once('class.aspireapi.php');
 require_once('config.php'); // edited config file from moodle install
-?>
 
-<h1>Example</h1>
-<p>First we get the moodle session id from browser cookie and look up the student</p>
-
-<?php
-$moodle = new MoodleQuery($CFG);
+echo '<h1>Example</h1><br/>';
+echo '<h2>Moodle</h2>';
+echo '<p>First we get the moodle session id from browser cookie and look up the student</p>';
 
 if (isset($_COOKIE['MoodleSession'])) {
+
   echo '<p><em>Moodle session id found</em></p>';
-  // $student = $moodle->getuser(3); // get a different user based on their moodle user id
+  // create a connection to the moodle db
+  $moodle = new MoodleQuery($CFG);
+
+  // get student from moodle session (or optionally from moodle student id) 
   if ($student = $moodle->getuser($_COOKIE['MoodleSession'])) { 
+
+    // student details
     $fullname = '<strong>'. $student->firstname .' '. $student->lastname .'</strong>';
-    $courses = $moodle->getenrolments($student);
     echo "<p>You are logged in as student $fullname:</p>";
     krumo($student);
+
+    // course details
+    $courses = $moodle->getenrolments($student);
     echo "<p>$fullname is enrolled on the following courses:</p>";
     echo '<dl>';
     foreach ($courses as $course) {
@@ -31,7 +36,32 @@ if (isset($_COOKIE['MoodleSession'])) {
     }
     echo '</dl>';
     krumo($courses);
-  } else {
+
+    // (aspire) reading list information
+    echo '<br/><h2>Talis Aspire</h2>';
+    if ($aspireconfig = $moodle->getaspireconfig()){
+      echo '<p>The following configuration was found within moodle for aspire reading lists:</p>';
+      krumo($aspireconfig);
+      $aspire = new AspireAPI($aspireconfig);
+      echo '<p>The following reading lists in Aspire match your enrolled modules</p>';
+ 
+      foreach($courses as $course) {
+        $readinglists = $aspire->modulelists($course);
+        echo '<ul>';
+        foreach($readinglists as $rl) {
+          echo '<li>'.$rl['html'].'</li>';
+        }
+        echo '</ul>';
+        krumo($readinglists);
+      }
+    }
+    else {
+      echo '<p>No aspire information was found in moodle.</p>';
+      echo '<p>Is there a Talis Aspire moodle plugin installed?</p>';
+    }
+
+  }
+  else {
     echo '<p>No moodle user/session was found.</p>';
     echo '<p>Are you logged into moodle?</p>';
   }
