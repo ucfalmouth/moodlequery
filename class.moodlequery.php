@@ -1,16 +1,28 @@
 <?php
 
+// Added by AM
+namespace moodlequery;
+use lib\Config;
+
+ini_set('display_errors',1);
+ini_set('display_startup_errors',1);
+error_reporting(-1);
+
+use PDO;
+
 class MoodleQuery
 {
   private $config = NULL;
   private $mdb = NULL;
 
-  public function __construct($CFG)
+  public function __construct()
   { 
-    $this->config = $CFG;
+    $this->config = Config::read('moodle.config');
     // override mysqli for PDO
     $this->config->dbtype = ($this->config->dbtype == 'mysqli') ? 'mysql' : $this->config->dbtype;
-    $db = new PDO($this->config->dbtype.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, "moodle_26", "m768zVWyH3c5Hyez");
+
+    // Edited by AM to use app Config rather tha hard code
+    $db = new PDO($this->config->dbtype.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, Config::read('db.user'), Config::read('db.password'));
 
     if (is_object($db)) {
       $this->mdb = $db;
