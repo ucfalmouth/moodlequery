@@ -14,14 +14,14 @@ class MoodleQuery
   private $config = NULL;
   private $mdb = NULL;
 
-  public function __construct()
+  public function __construct($cfg)
   { 
-    $this->config = Config::read('moodle.config');
+    $this->config = $cfg;
     // override mysqli for PDO
     // $this->config->dbtype = ($this->config->dbtype == 'mysqli') ? 'mysql' : $this->config->dbtype;
 
     // Edited by AM to use app Config rather tha hard code
-    $db = new PDO(Config::read('db.type').':host='.''.Config::read('db.host').';dbname='.Config::read('db.basename'), Config::read('db.user'), Config::read('db.password'));
+    $db = new PDO('mysql'.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, $this->config->dbuser, 'm768zVWyH3c5Hyez');
 
     if (is_object($db)) {
       $this->mdb = $db;
@@ -158,7 +158,7 @@ class MoodleQuery
     if (is_object($course)) {
       // todo - given course details, call constructor for course object
       // (in meantime just add details like path to course object)
-      $course->url = Config::read('site.root').'/course/view.php?id='.$course->id;
+      $course->url = $this->config->wwwroot.'/course/view.php?id='.$course->id;
 
     } 
     else if (is_numeric($course)) {
