@@ -16,6 +16,7 @@ class AspireAPI
   public function __construct($mdl_config_plugins)
   { 
     if (is_array($mdl_config_plugins)) {
+      echo "Moodle plugs found";
       // $this->config = $mdl_config_plugins;
       if (isset($mdl_config_plugins['aspirelists'])) {
         $this->aspireurl = $mdl_config_plugins['aspirelists']['targetAspire'];
@@ -47,7 +48,11 @@ class AspireAPI
       if ($code)
       {
         $code = strtolower($code);  
+        //echo "CODE: ";
+        //echo $code;
         $url = "$site/$targetKG/$code/lists.json";
+        //echo "The url is: ";
+        //echo $url;
         $ch = curl_init();
         $options = array(
             CURLOPT_URL            => $url,
