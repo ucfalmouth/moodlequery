@@ -21,7 +21,7 @@ class MoodleQuery
     // $this->config->dbtype = ($this->config->dbtype == 'mysqli') ? 'mysql' : $this->config->dbtype;
 
     // Edited by AM to use app Config rather tha hard code
-    $db = new PDO('mysql'.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, $this->config->dbuser, 'm768zVWyH3c5Hyez');
+    $db = new PDO('mysql'.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, $this->config->dbuser, $this->config->dbpass);
 
     if (is_object($db)) {
       $this->mdb = $db;
