@@ -1,14 +1,13 @@
 <?php
 
 // Added by AM
-namespace moodlequery;
+namespace moodle;
 use lib\Config;
+use PDO;
 
 ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(-1);
-
-use PDO;
 
 class MoodleQuery
 {
@@ -19,10 +18,10 @@ class MoodleQuery
   { 
     $this->config = Config::read('moodle.config');
     // override mysqli for PDO
-    $this->config->dbtype = ($this->config->dbtype == 'mysqli') ? 'mysql' : $this->config->dbtype;
+    // $this->config->dbtype = ($this->config->dbtype == 'mysqli') ? 'mysql' : $this->config->dbtype;
 
     // Edited by AM to use app Config rather tha hard code
-    $db = new PDO($this->config->dbtype.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, Config::read('db.user'), Config::read('db.password'));
+    $db = new PDO(Config::read('db.type').':host='.''.Config::read('db.host').';dbname='.Config::read('db.basename'), Config::read('db.user'), Config::read('db.password'));
 
     if (is_object($db)) {
       $this->mdb = $db;
@@ -159,7 +158,7 @@ class MoodleQuery
     if (is_object($course)) {
       // todo - given course details, call constructor for course object
       // (in meantime just add details like path to course object)
-      $course->url = $this->config->wwwroot.'/course/view.php?id='.$course->id;
+      $course->url = Config::read('site.root').'/course/view.php?id='.$course->id;
 
     } 
     else if (is_numeric($course)) {

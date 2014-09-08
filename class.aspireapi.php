@@ -1,6 +1,6 @@
 <?php
 
-namespace moodlequery;
+namespace aspire;
 use lib\Config;
 
 ini_set('display_errors',1);
