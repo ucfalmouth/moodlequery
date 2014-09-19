@@ -3,7 +3,7 @@
     "description": "lightweight moodle api",
     "authors": [
         {
-            "name": "tombola",
+            "name": "tombola"
         }
     ],
     "minimum-stability": "dev",
