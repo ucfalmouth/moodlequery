@@ -1,0 +1,13 @@
+{
+    "name": "ucfalmouth/moodlequery",
+    "description": "lightweight moodle api",
+    "authors": [
+        {
+            "name": "tombola",
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+    }
+}
