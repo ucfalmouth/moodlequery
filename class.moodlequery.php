@@ -18,13 +18,21 @@ class MoodleQuery
   { 
     $this->config = $cfg;
     // override mysqli for PDO
-    ($this->config->dbtype == 'mysqli') ? $this->config->dbtype = 'mysql': NULL;
-    k($this->config->dbtype);
+    ($this->config->dbtype == 'mysqli') ? $this->config->dbtype = 'mysql' : NULL; 
     // $this->config->dbtype = ($this->config->dbtype == 'mysqli') ? 'mysql' : $this->config->dbtype;
 
     // Edited by AM to use app Config rather tha hard code
-    $db = new PDO($this->config->dbtype.':host='.''.$this->config->dbhost.';dbname='.$this->config->dbname, $this->config->dbuser, $this->config->dbpass);
-
+    switch ($this->config->dbtype) {
+    case 'mysql':
+      $connection_string = 'mysql:host='.''.$this->config->dbhost.';dbname='.$this->config->dbname
+      $db = new PDO($connection_string, $this->config->dbuser, $this->config->dbpass);
+      break;
+    case 'sqlsrv':
+      $connection_string = "sqlsrv:Server=". $this->config->dbhost .";Database=". $this->config->dbname
+      $db = new PDO($connection_string, $this->config->dbuser, $this->config->dbpass);
+      break;
+    }
+    
     if (is_object($db)) {
       $this->mdb = $db;
       return true;
