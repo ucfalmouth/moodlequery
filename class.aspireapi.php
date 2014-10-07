@@ -16,6 +16,7 @@ class AspireAPI
   public function __construct($mdl_config_plugins)
   { 
     if (is_array($mdl_config_plugins)) {
+      echo "Moodle plugs found";
       // $this->config = $mdl_config_plugins;
       if (isset($mdl_config_plugins['aspirelists'])) {
         $this->aspireurl = $mdl_config_plugins['aspirelists']['targetAspire'];
@@ -74,7 +75,11 @@ class AspireAPI
             {
               $list = array();
               $list["url"] = $usesList["value"]; // extract the list URL
-              $list["name"] = $data[$list["url"]]['http://rdfs.org/sioc/spec/name'][0]['value']; // extract the list name
+              if (isset($data[$list["url"]]['http://rdfs.org/sioc/spec/name'])) {
+               $list["name"] = $data[$list["url"]]['http://rdfs.org/sioc/spec/name'][0]['value']; // extract the list name
+              } else {
+                $list["name"] = '';
+              }
               // get last updated date
               if (isset($data[$list["url"]]['http://purl.org/vocab/resourcelist/schema#lastUpdated'])) // if there is a last updated date...
               {
